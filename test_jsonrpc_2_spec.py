@@ -87,7 +87,7 @@ def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response)
     )
     assert 200 == response.code
 
-    json_response = json.loads(response.body)
+    json_response = json.loads(response.body.decode())
     assert json_response == expected_response
 
 
