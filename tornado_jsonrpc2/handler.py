@@ -19,7 +19,8 @@ class JSONRPCHandler(RequestHandler):
         try:
             request = decode(self.request.body)
         except (ParseError, EmptyBatchRequest) as error:
-            self.write(self.transform_exception(error))
+            message = self.transform_exception(error)
+            self.write(json.dumps(message).encode())
             return
 
         if isinstance(request, list):  # batch request
@@ -36,11 +37,11 @@ class JSONRPCHandler(RequestHandler):
             if responses:
                 # Twisted won't write lists for security reasons
                 # see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write
-                self.write(json.dumps(responses))
+                self.write(json.dumps(responses).encode())
         else:
             message = await self._get_return_message(request)
             if message:
-                self.write(message)
+                self.write(json.dumps(message).encode())
 
     async def _get_return_message(self, request):
         try:
