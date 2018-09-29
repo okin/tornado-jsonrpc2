@@ -83,7 +83,7 @@ def jsonrpc_fetch(http_client, test_url):
 @pytest.mark.gen_test
 def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response):
     response = yield jsonrpc_fetch(
-        body=json.dumps(jrequest)
+        body=json.dumps(jrequest.encode())
     )
     assert 200 == response.code
 
