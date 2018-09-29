@@ -287,7 +287,7 @@ def testBatchCall(jsonrpc_fetch):
     ]
 
     for json_response in json_responses:
-        print(f"Searching match for {json_response}")
+        print("Searching match for {}".format(json_response))
         for expected_response in expected_responses:
             if json_response['id'] == expected_response['id']:
                 if 'error' in json_response:
@@ -298,7 +298,7 @@ def testBatchCall(jsonrpc_fetch):
                     try:
                         emessage = expected_response['error'].pop('message')
                     except KeyError:
-                        print(f"expected_response is: {expected_response}")
+                        print("expected_response: {}".format(expected_response))
                         raise
 
                     assert rmessage.startswith(emessage)
