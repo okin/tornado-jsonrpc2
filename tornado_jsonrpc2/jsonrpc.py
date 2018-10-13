@@ -73,5 +73,7 @@ class JSONRPCRequest:
         if not isinstance(self._method, str):
             raise InvalidRequest("'method' must be a string!")
 
-        if self._params is not None and not isinstance(self._params, (list, dict)):
+        if (self._params is not None and
+           not isinstance(self._params, (list, dict))):
+
             raise InvalidRequest("Invalid type for 'params'!")
