@@ -40,3 +40,22 @@ def test_invalid_error_in_responder(jsonrpc_fetch):
         }
     }
     assert response == expected_response
+
+
+@pytest.mark.gen_test
+def test_invalid_request(jsonrpc_fetch):
+    response = yield jsonrpc_fetch(
+        body=json.dumps({"jsonrpc": "2.0", "id": 1})
+    )
+    assert 200 == response.code
+
+    response = json.loads(response.body)
+    expected_response = {
+        'error': {
+            'code': -32600,
+            'message': "Invalid Request: Missing member 'method'"
+        },
+        'id': None,
+        'jsonrpc': '2.0'
+    }
+    assert response == expected_response

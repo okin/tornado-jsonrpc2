@@ -18,7 +18,7 @@ class JSONRPCHandler(RequestHandler):
     async def post(self):
         try:
             request = decode(self.request.body)
-        except (ParseError, EmptyBatchRequest) as error:
+        except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
             self.write(self.transform_exception(error))
             return
 
