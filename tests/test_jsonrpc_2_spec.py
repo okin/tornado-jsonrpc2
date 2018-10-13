@@ -250,6 +250,8 @@ def testBatchCallWithInvalidRequests(jsonrpc_fetch):
 
     # All results are the same
     for json_response in json_responses:
+        assert json_response['jsonrpc'] == "2.0"
+
         # tornado_jsonrpc2 uses a more detailed response and therefore this
         # isn't the exact return value as found in the specification.
         rmessage = json_response["error"].pop('message')
@@ -290,6 +292,7 @@ def testBatchCall(jsonrpc_fetch):
         print("Searching match for {}".format(json_response))
         for expected_response in expected_responses:
             if json_response['id'] == expected_response['id']:
+                assert json_response['jsonrpc'] == "2.0"
                 if 'error' in json_response:
                     # tornado_jsonrpc2 uses a more detailed response and
                     # therefore this isn't the exact return value as
