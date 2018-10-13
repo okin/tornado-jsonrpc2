@@ -25,6 +25,13 @@ def test_invalid_parameter_type(jsonrpc_fetch):
     assert 200 == response.code
 
     response = json.loads(response.body)
-    print(response)
-    assert response['jsonrpc'] == "2.0"
-    # assert json_response == expected_response
+
+    expected_response = {
+        'jsonrpc': '2.0',
+        'id': 1,
+        'error': {
+            'code': -32600,
+            'message': "Invalid Request: Invalid type for 'params'!"
+        }
+    }
+    assert response == expected_response
