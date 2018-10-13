@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="tornado-jsonrpc2",
-    version="0.1",
+    version="0.1.dev",
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
     description="A handler for JSON-RPC for Tornado.",
