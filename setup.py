@@ -6,9 +6,15 @@ setuptools.setup(
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
     description="A handler for JSON-RPC for Tornado.",
+    keywords="tornado jsonrpc jsonrpc2 rpc json",
     url="https://github.com/okin/tornado-jsonrpc2",
-    packages=setuptools.find_packages(),
+    project_urls={
+        "Source Code": "https://github.com/okin/tornado-jsonrpc2",
+    },
+    packages=setuptools.find_packages(exclude=["tests"]),
+    python_requires='>=3.6',
     install_requires=['tornado>=5.0'],
+    tests_require=['pytest-tornado'],
     classifiers=[
         "Programming Language :: Python :: 3",
         # "License :: OSI Approved :: MIT License",
