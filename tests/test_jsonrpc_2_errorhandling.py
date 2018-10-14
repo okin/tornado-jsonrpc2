@@ -1,8 +1,5 @@
 """
-More tests for JSON-RPC 2.0.
-
-Tests for JSON-RPC 2.0 that cover cases not defined as examples in the \
-specification.
+Errorhandling tests for JSONRPC 2.0.
 """
 
 import json

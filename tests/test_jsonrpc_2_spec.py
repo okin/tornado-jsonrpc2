@@ -1,3 +1,9 @@
+"""
+These tests follow the examples from the JSON-RPC 2.0 specification.
+
+For testing purposes an example backend is implemented.
+"""
+
 import json
 import pytest
 import functools
