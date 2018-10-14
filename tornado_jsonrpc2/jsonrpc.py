@@ -76,9 +76,9 @@ class JSONRPCRequest:
             raise InvalidRequest("Unsupported JSONRPC version!")
 
         if not isinstance(self._method, str):
-            raise InvalidRequest("'method' must be a string!")
+            raise InvalidRequest('"method" must be a string!')
 
         if (self._params is not None and
            not isinstance(self._params, (list, dict))):
 
-            raise InvalidRequest("Invalid type for 'params'!")
+            raise InvalidRequest('Invalid type for "params"!')

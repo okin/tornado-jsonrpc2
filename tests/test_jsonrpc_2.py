@@ -31,7 +31,7 @@ def test_invalid_parameter_type(jsonrpc_fetch):
         'id': 1,
         'error': {
             'code': -32600,
-            'message': "Invalid Request: Invalid type for 'params'!"
+            'message': 'Invalid Request: Invalid type for "params"!'
         }
     }
     assert response == expected_response
