@@ -59,3 +59,22 @@ def test_invalid_request(jsonrpc_fetch):
         'jsonrpc': '2.0'
     }
     assert response == expected_response
+
+
+@pytest.mark.gen_test
+def test_unsupported_jsonrpc_version(jsonrpc_fetch):
+    response = yield jsonrpc_fetch(
+        body=json.dumps({"jsonrpc": "3000", "id": 1, "method": "foo"})
+    )
+    assert 200 == response.code
+
+    response = json.loads(response.body)
+    expected_response = {
+        'error': {
+            'code': -32600,
+            'message': 'Invalid Request: Unsupported JSONRPC version!'
+        },
+        'id': 1,
+        'jsonrpc': '2.0'
+    }
+    assert response == expected_response

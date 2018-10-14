@@ -1,6 +1,8 @@
 import json
 from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 
+SUPPORTED_VERSIONS = {'2.0', }
+
 
 def decode(request):
     try:
@@ -70,6 +72,9 @@ class JSONRPCRequest:
         return self._is_notification
 
     def validate(self):
+        if self.version not in SUPPORTED_VERSIONS:
+            raise InvalidRequest("Unsupported JSONRPC version!")
+
         if not isinstance(self._method, str):
             raise InvalidRequest("'method' must be a string!")
 
