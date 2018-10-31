@@ -1,5 +1,6 @@
-import json
+from tornado.escape import json_encode
 from tornado.web import RequestHandler
+
 from .jsonrpc import decode
 from .exceptions import (
     JSONRPCError, ParseError, InvalidRequest, MethodNotFound,
@@ -36,7 +37,7 @@ class JSONRPCHandler(RequestHandler):
             if responses:
                 # Twisted won't write lists for security reasons
                 # see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write
-                self.write(json.dumps(responses))
+                self.write(json_encode(responses))
         else:
             message = await self._get_return_message(request)
             if message:
