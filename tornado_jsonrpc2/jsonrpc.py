@@ -93,9 +93,6 @@ class JSONRPC1Request(JSONRPCRequest):
     def validate(self):
         super().validate()
 
-        if self.version != '1.0':
-            raise ValueError("JSONRPC version has been changed")
-
         if not isinstance(self._params, list):
             raise InvalidRequest('Invalid type for "params"!')
 
@@ -109,9 +106,6 @@ class JSONRPC2Request(JSONRPCRequest):
 
     def validate(self):
         super().validate()
-
-        if self.version != '2.0':
-            raise ValueError("JSONRPC version has been changed")
 
         if (self._params is not None and
            not isinstance(self._params, (list, dict))):
