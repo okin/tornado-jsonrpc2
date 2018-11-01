@@ -85,7 +85,7 @@ class JSONRPC1Request(JSONRPCRequest):
         super().__init__(**kwargs)
 
         if 'id' not in kwargs:
-            raise InvalidRequest('Missing property "id"')
+            raise InvalidRequest('Missing property "id"!')
 
         if self._id is None:
             self._is_notification = True
