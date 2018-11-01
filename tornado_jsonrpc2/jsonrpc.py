@@ -1,7 +1,7 @@
 import json
 from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 
-SUPPORTED_VERSIONS = {'2.0', }
+SUPPORTED_VERSIONS = {'2.0', '1.0'}
 
 
 def decode(request):
@@ -35,12 +35,13 @@ def process_request(request):
 
 class JSONRPCRequest:
     def __init__(self, **kwargs):
-        self._version = kwargs.get('jsonrpc', 1.0)
-        # TODO: check for supported version
+        self._version = kwargs.get('jsonrpc', '1.0')
         self._method = kwargs['method']
 
         try:
             self._id = kwargs['id']
+            if self._id is None and self._version == '1.0':
+                raise KeyError("Notification detected.")
             self._is_notification = False
         except KeyError:
             self._id = None

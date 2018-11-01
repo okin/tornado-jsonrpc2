@@ -51,11 +51,18 @@ class JSONRPCHandler(RequestHandler):
         try:
             method_result = await self.create_response(request)
             if not request.is_notification:
-                return {
-                    "jsonrpc": "2.0",
-                    "id": request.id,
-                    "result": method_result
-                }
+                if request.version == '1.0':
+                    return {
+                        "id": request.id,
+                        "result": method_result,
+                        "error": None
+                    }
+                else:
+                    return {
+                        "jsonrpc": "2.0",
+                        "id": request.id,
+                        "result": method_result
+                    }
         except (MethodNotFound, InvalidParams) as error:
             if not request.is_notification:
                 return self.transform_exception(error, request)
@@ -68,7 +75,7 @@ class JSONRPCHandler(RequestHandler):
 
         request_id = request.id if request else None
 
-        return {
+        response = {
             "jsonrpc": "2.0",
             "id": request_id,
             "error": {
@@ -76,3 +83,9 @@ class JSONRPCHandler(RequestHandler):
                 "message": "{}: {}".format(exception.short_message, str(exception))
             }
         }
+
+        if request and request.version == '1.0':
+            del response['jsonrpc']
+            response['result'] = None
+
+        return response
