@@ -66,7 +66,7 @@ def jsonrpc_fetch(http_client, test_url):
 def test_invalid_parameter_type(jsonrpc_fetch):
     request = {
         "method": "foo",
-        "params": "nope",  # Has to be list or dict
+        "params": "nope",  # Has to be list
         "id": 1
     }
     response = yield jsonrpc_fetch(body=json.dumps(request))
