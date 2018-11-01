@@ -26,9 +26,17 @@ def decode(request):
 
 def process_request(request):
     try:
-        return JSONRPCRequest(**request)
+        version = request.get('jsonrpc', '1.0')
+        if version == '2.0':
+            return JSONRPC2Request(**request)
+        elif version == '1.0':
+            return JSONRPC1Request(**request)
+        elif version not in SUPPORTED_VERSIONS:
+            return JSONRPCRequest(**request)
     except KeyError as kerr:
         return InvalidRequest("Missing member {!s}".format(kerr))
+    except InvalidRequest:
+        raise
     except Exception as err:
         return InvalidRequest(str(err))
 
@@ -37,17 +45,9 @@ class JSONRPCRequest:
     def __init__(self, **kwargs):
         self._version = kwargs.get('jsonrpc', '1.0')
         self._method = kwargs['method']
-
-        try:
-            self._id = kwargs['id']
-            if self._id is None and self._version == '1.0':
-                raise KeyError("Notification detected.")
-            self._is_notification = False
-        except KeyError:
-            self._id = None
-            self._is_notification = True
-
         self._params = kwargs.get('params')
+        self._id = kwargs.get('id')
+        self._is_notification = False
 
     @property
     def version(self):
@@ -78,6 +78,40 @@ class JSONRPCRequest:
 
         if not isinstance(self._method, str):
             raise InvalidRequest('"method" must be a string!')
+
+
+class JSONRPC1Request(JSONRPCRequest):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        if 'id' not in kwargs:
+            raise InvalidRequest('Missing property "id"')
+
+        if self._id is None:
+            self._is_notification = True
+
+    def validate(self):
+        super().validate()
+
+        if self.version != '1.0':
+            raise ValueError("JSONRPC version has been changed")
+
+        if not isinstance(self._params, list):
+            raise InvalidRequest('Invalid type for "params"!')
+
+
+class JSONRPC2Request(JSONRPCRequest):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        if 'id' not in kwargs:
+            self._is_notification = True
+
+    def validate(self):
+        super().validate()
+
+        if self.version != '2.0':
+            raise ValueError("JSONRPC version has been changed")
 
         if (self._params is not None and
            not isinstance(self._params, (list, dict))):
