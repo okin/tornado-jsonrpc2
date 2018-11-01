@@ -15,7 +15,7 @@ from tornado_jsonrpc2.exceptions import MethodNotFound
 
 class JSONRPCSpecBackend:
     """
-    Test backend modeled after the JSON-RPC 2.0 soec,
+    Test backend modeled after the JSON-RPC 2.0 spec.
     """
     def subtract(self, minuend, subtrahend):
         return minuend - subtrahend
