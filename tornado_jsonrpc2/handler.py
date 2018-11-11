@@ -9,15 +9,16 @@ __all__ = ("JSONRPCHandler", )
 
 
 class JSONRPCHandler(RequestHandler):
-    def initialize(self, response_creator):
+    def initialize(self, response_creator, version=None):
         self.create_response = response_creator
+        self.version = version
 
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
 
     async def post(self):
         try:
-            request = decode(self.request.body)
+            request = decode(self.request.body, version=self.version)
         except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
             self.write(self.transform_exception(error))
             return
@@ -80,13 +81,16 @@ class JSONRPCHandler(RequestHandler):
             pass
 
         try:
-            version_1 = request.version == '1.0'
             request_id = request.id
         except AttributeError:
             request_id = None
-            version_1 = False
 
-        if version_1:
+        try:
+            version = self.version or request.version
+        except AttributeError:
+            version = self.version
+
+        if version == '1.0':
             return {
                 "id": request_id,
                 "result": None,

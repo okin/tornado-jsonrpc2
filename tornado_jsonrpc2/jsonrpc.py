@@ -4,40 +4,43 @@ from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 SUPPORTED_VERSIONS = {'2.0', '1.0'}
 
 
-def decode(request):
+def decode(request, version=None):
     try:
         obj = json.loads(request)
     except json.JSONDecodeError as jsonError:
         raise ParseError(str(jsonError))
 
     if isinstance(obj, list):  # Batch request
-        requests = [process_request(data) for data in obj]
+        requests = [process_request(data, version=version) for data in obj]
         if not requests:
             raise EmptyBatchRequest("Empty batch request")
 
         return requests
     else:  # Single request
-        request = process_request(obj)
+        request = process_request(obj, version=version)
         if isinstance(request, Exception):
             raise request
 
         return request
 
 
-def process_request(request):
+def process_request(request, version=None):
     try:
-        version = request.get('jsonrpc', '1.0')
-        if version == '2.0':
+        request_version = request.get('jsonrpc', '1.0')
+        if version is not None and request_version != version:
+            raise InvalidRequest("Refusing to handle version {}".format(request_version))
+
+        if request_version == '2.0':
             return JSONRPC2Request(**request)
-        elif version == '1.0':
+        elif request_version == '1.0':
             return JSONRPC1Request(**request)
-        elif version not in SUPPORTED_VERSIONS:
+        elif request_version not in SUPPORTED_VERSIONS:
             return JSONRPCRequest(**request)
     except KeyError as kerr:
         return InvalidRequest("Missing member {!s}".format(kerr),
                               JSONRPCStyleRequest(**request))
     except InvalidRequest as inverr:
-        return InvalidRequest(str(inverr), JSONRPCRequest(**request))
+        return InvalidRequest(str(inverr), JSONRPCStyleRequest(**request))
     except Exception as err:
         return InvalidRequest(str(err))
 

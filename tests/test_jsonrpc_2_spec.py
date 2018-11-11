@@ -61,7 +61,7 @@ def app():
     simple_creator = functools.partial(create_response, backend=JSONRPCSpecBackend())
 
     return tornado.web.Application([
-        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator}),
+        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator, "version": "2.0"}),
     ])
 
 
