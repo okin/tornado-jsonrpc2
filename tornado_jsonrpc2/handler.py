@@ -73,19 +73,30 @@ class JSONRPCHandler(RequestHandler):
     def transform_exception(self, exception, request=None):
         assert isinstance(exception, JSONRPCError)
 
-        request_id = request.id if request else None
+        try:
+            version_1 = request.version == '1.0'
+            request_id = request.id
+        except AttributeError:
+            request_id = None
+            version_1 = False
 
-        response = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "error": {
-                "code": exception.error_code,
-                "message": "{}: {}".format(exception.short_message, str(exception))
+        if version_1:
+            response = {
+                "id": request_id,
+                "result": None,
+                "error": {
+                    "code": exception.error_code,
+                    "message": "{}: {}".format(exception.short_message, str(exception))
+                }
             }
-        }
-
-        if request and request.version == '1.0':
-            del response['jsonrpc']
-            response['result'] = None
+        else:
+            response = {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "error": {
+                    "code": exception.error_code,
+                    "message": "{}: {}".format(exception.short_message, str(exception))
+                }
+            }
 
         return response
