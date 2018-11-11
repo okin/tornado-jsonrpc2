@@ -43,10 +43,11 @@ def process_request(request):
 
 class JSONRPCRequest:
     def __init__(self, **kwargs):
-        self._version = kwargs.get('jsonrpc', '1.0')
         self._method = kwargs['method']
-        self._params = kwargs.get('params')
+
         self._id = kwargs.get('id')
+        self._params = kwargs.get('params')
+        self._version = kwargs.get('jsonrpc', '1.0')
         self._is_notification = False
 
     def __repr__(self):
