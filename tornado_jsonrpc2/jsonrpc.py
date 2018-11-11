@@ -54,12 +54,12 @@ class JSONRPCRequest:
             self.__class__.__name__, self._version, self._method, self._params, self._id)
 
     @property
-    def version(self):
-        return self._version
-
-    @property
     def id(self):
         return self._id
+
+    @property
+    def is_notification(self):
+        return self._is_notification
 
     @property
     def method(self):
@@ -73,8 +73,8 @@ class JSONRPCRequest:
         return self._params
 
     @property
-    def is_notification(self):
-        return self._is_notification
+    def version(self):
+        return self._version
 
     def validate(self):
         if self.version not in SUPPORTED_VERSIONS:
