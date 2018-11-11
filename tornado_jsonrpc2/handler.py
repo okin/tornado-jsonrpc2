@@ -74,6 +74,12 @@ class JSONRPCHandler(RequestHandler):
         assert isinstance(exception, JSONRPCError)
 
         try:
+            request = exception.args[1]
+            exception = exception.__class__(exception.args[0])
+        except (IndexError, TypeError):
+            pass
+
+        try:
             version_1 = request.version == '1.0'
             request_id = request.id
         except AttributeError:

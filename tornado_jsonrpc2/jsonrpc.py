@@ -35,8 +35,8 @@ def process_request(request):
             return JSONRPCRequest(**request)
     except KeyError as kerr:
         return InvalidRequest("Missing member {!s}".format(kerr))
-    except InvalidRequest:
-        raise
+    except InvalidRequest as inverr:
+        return InvalidRequest(str(inverr), JSONRPCRequest(**request))
     except Exception as err:
         return InvalidRequest(str(err))
 
