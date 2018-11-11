@@ -5,7 +5,6 @@ Tests for JSON-RPC 2.0 that cover cases not defined as examples in the \
 specification.
 """
 
-import json
 import pytest
 import functools
 import tornado.web
@@ -47,10 +46,10 @@ def test_invalid_parameter_type(jsonrpc_fetch):
         "params": "nope",  # Has to be list
         "id": 1
     }
-    response = yield jsonrpc_fetch(body=json.dumps(request))
+    response = yield jsonrpc_fetch(body=json_encode(request))
     assert 200 == response.code
 
-    response = json.loads(response.body)
+    response = json_decode(response.body)
 
     expected_response = {
         'id': 1,
@@ -69,10 +68,10 @@ def test_request_with_missing_id(jsonrpc_fetch):
         "method": "foo",
         "params": []
     }
-    response = yield jsonrpc_fetch(body=json.dumps(request))
+    response = yield jsonrpc_fetch(body=json_encode(request))
     assert 200 == response.code
 
-    response = json.loads(response.body)
+    response = json_decode(response.body)
     print(response)
 
     expected_response = {
