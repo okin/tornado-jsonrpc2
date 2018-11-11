@@ -15,35 +15,13 @@ from tornado_jsonrpc2.handler import JSONRPCHandler
 from tornado_jsonrpc2.exceptions import MethodNotFound
 
 
-class JSONRPCSpecBackend:
-    pass
-
-
-async def create_response(jsonrpcrequest, backend):
-    try:
-        method = getattr(backend, jsonrpcrequest.method)
-    except AttributeError:
-        raise MethodNotFound("Method '{}' not found!".format(jsonrpcrequest.method))
-
-    try:
-        params = jsonrpcrequest.params
-    except AttributeError:
-        return method()
-
-    if isinstance(params, list):
-        return method(*params)
-    elif isinstance(params, dict):
-        return method(**params)
-    else:
-        raise RuntimeError("We should have never gotten here.")
-
-
 @pytest.fixture
 def app():
-    simple_creator = functools.partial(create_response, backend=JSONRPCSpecBackend())
+    async def fail(jsonrpcrequest):
+        raise RuntimeError("We should have never gotten here.")
 
     return tornado.web.Application([
-        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator}),
+        (r"/jsonrpc", JSONRPCHandler, {"response_creator": fail}),
     ])
 
 
