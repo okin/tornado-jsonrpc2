@@ -78,7 +78,7 @@ def test_request_with_missing_id(jsonrpc_fetch):
         'result': None,
         'error': {
             'code': -32600,
-            'message': 'Invalid Request: Missing property "id"!'
+            'message': 'Invalid Request: Missing member "id"!'
         }
     }
     assert 'jsonrpc' not in response, "Got a JSON-RPC 2.0 response"
@@ -100,7 +100,7 @@ def test_request_with_just_params(jsonrpc_fetch):
         'result': None,
         'error': {
             'code': -32600,
-            'message': 'Invalid Request: Missing property "id"!'
+            'message': 'Invalid Request: Missing member "method"!'
         }
     }
     assert 'jsonrpc' not in response, "Got a JSON-RPC 2.0 response"
