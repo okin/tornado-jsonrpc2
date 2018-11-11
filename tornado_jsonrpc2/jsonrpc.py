@@ -34,20 +34,53 @@ def process_request(request):
         elif version not in SUPPORTED_VERSIONS:
             return JSONRPCRequest(**request)
     except KeyError as kerr:
-        return InvalidRequest("Missing member {!s}".format(kerr))
+        return InvalidRequest("Missing member {!s}".format(kerr),
+                              JSONRPCStyleRequest(**request))
     except InvalidRequest as inverr:
         return InvalidRequest(str(inverr), JSONRPCRequest(**request))
     except Exception as err:
         return InvalidRequest(str(err))
 
 
-class JSONRPCRequest:
-    def __init__(self, **kwargs):
-        self._method = kwargs['method']
+class JSONRPCStyleRequest:
 
+    def __init__(self, **kwargs):
         self._id = kwargs.get('id')
+        self._method = kwargs.get('method')
         self._params = kwargs.get('params')
         self._version = kwargs.get('jsonrpc', '1.0')
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def method(self):
+        return self._method
+
+    @property
+    def params(self):
+        if self._params is None:
+            raise AttributeError("No params given.")
+
+        return self._params
+
+    @property
+    def version(self):
+        return self._version
+
+
+class JSONRPCRequest(JSONRPCStyleRequest):
+    """
+    A request in style of JSON-RPC.
+
+    This is a request not following of a specific version.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._method = kwargs['method']
+
         self._is_notification = False
 
     def __repr__(self):

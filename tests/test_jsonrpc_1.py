@@ -72,7 +72,28 @@ def test_request_with_missing_id(jsonrpc_fetch):
     assert 200 == response.code
 
     response = json_decode(response.body)
-    print(response)
+
+    expected_response = {
+        'id': None,
+        'result': None,
+        'error': {
+            'code': -32600,
+            'message': 'Invalid Request: Missing property "id"!'
+        }
+    }
+    assert 'jsonrpc' not in response, "Got a JSON-RPC 2.0 response"
+    assert response == expected_response
+
+
+@pytest.mark.gen_test
+def test_request_with_just_params(jsonrpc_fetch):
+    request = {
+        "params": []
+    }
+    response = yield jsonrpc_fetch(body=json_encode(request))
+    assert 200 == response.code
+
+    response = json_decode(response.body)
 
     expected_response = {
         'id': None,
