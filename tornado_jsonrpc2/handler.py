@@ -81,7 +81,7 @@ class JSONRPCHandler(RequestHandler):
             version_1 = False
 
         if version_1:
-            response = {
+            return {
                 "id": request_id,
                 "result": None,
                 "error": {
@@ -90,7 +90,7 @@ class JSONRPCHandler(RequestHandler):
                 }
             }
         else:
-            response = {
+            return {
                 "jsonrpc": "2.0",
                 "id": request_id,
                 "error": {
@@ -98,5 +98,3 @@ class JSONRPCHandler(RequestHandler):
                     "message": "{}: {}".format(exception.short_message, str(exception))
                 }
             }
-
-        return response
