@@ -49,6 +49,10 @@ class JSONRPCRequest:
         self._id = kwargs.get('id')
         self._is_notification = False
 
+    def __repr__(self):
+        return '{}(version={!r}, method={!r}, params={!r}, id={!r})'.format(
+            self.__class__.__name__, self._version, self._method, self._params, self._id)
+
     @property
     def version(self):
         return self._version
