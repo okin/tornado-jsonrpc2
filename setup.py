@@ -9,7 +9,7 @@ setuptools.setup(
     keywords="tornado jsonrpc jsonrpc2 rpc json",
     url="https://github.com/okin/tornado-jsonrpc2",
     project_urls={
-        "Source Code": "https://github.com/okin/tornado-jsonrpc2",
+        "Source": "https://github.com/okin/tornado-jsonrpc2",
     },
     packages=setuptools.find_packages(exclude=["examples", "tests"]),
     python_requires='>=3.6',
