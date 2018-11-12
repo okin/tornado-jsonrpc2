@@ -16,8 +16,15 @@ setuptools.setup(
     install_requires=['tornado>=5.0'],
     tests_require=['pytest-tornado'],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        # "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        'Development Status :: 4 - Beta',
+        'Framework :: AsyncIO',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Information Technology',
+        'License :: OSI Approved :: GNU Affero General Public License v3',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3 :: Only',
     ],
 )
