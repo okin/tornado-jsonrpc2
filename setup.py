@@ -19,6 +19,9 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["examples", "tests"]),
     python_requires='>=3.6',
     install_requires=['tornado>=5.0'],
+    extras_require={
+        'test': ['pytest-tornado'],
+    },
     tests_require=['pytest-tornado'],
     classifiers=[
         'Development Status :: 4 - Beta',
