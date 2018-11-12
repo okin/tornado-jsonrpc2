@@ -1,11 +1,16 @@
 import setuptools
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setuptools.setup(
     name="tornado-jsonrpc2",
     version="0.1.dev",
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
     description="A handler for JSON-RPC for Tornado.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     keywords="tornado jsonrpc jsonrpc2 rpc json",
     url="https://github.com/okin/tornado-jsonrpc2",
     project_urls={
