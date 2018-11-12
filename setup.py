@@ -11,7 +11,7 @@ setuptools.setup(
     project_urls={
         "Source Code": "https://github.com/okin/tornado-jsonrpc2",
     },
-    packages=setuptools.find_packages(exclude=["tests"]),
+    packages=setuptools.find_packages(exclude=["examples", "tests"]),
     python_requires='>=3.6',
     install_requires=['tornado>=5.0'],
     tests_require=['pytest-tornado'],
