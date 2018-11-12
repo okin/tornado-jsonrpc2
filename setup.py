@@ -11,7 +11,7 @@ setuptools.setup(
     description="JSON-RPC 2.0 handler for Tornado.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    keywords="tornado jsonrpc jsonrpc2 rpc json",
+    keywords="tornado jsonrpc jsonrpc2 rpc json requesthandler",
     url="https://github.com/okin/tornado-jsonrpc2",
     project_urls={
         "Source": "https://github.com/okin/tornado-jsonrpc2",
