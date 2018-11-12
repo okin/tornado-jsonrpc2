@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.1.dev",
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
-    description="A handler for JSON-RPC for Tornado.",
+    description="JSON-RPC 2.0 handler for Tornado.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="tornado jsonrpc jsonrpc2 rpc json",
