@@ -85,10 +85,7 @@ class JSONRPCHandler(RequestHandler):
         except AttributeError:
             request_id = None
 
-        try:
-            version = self.version or request.version
-        except AttributeError:
-            version = self.version
+        version = self.version or request.version
 
         if version == '1.0':
             return {
