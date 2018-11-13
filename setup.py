@@ -25,9 +25,7 @@ setuptools.setup(
     tests_require=['pytest-tornado'],
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Framework :: AsyncIO',
         'Intended Audience :: Developers',
-        'Intended Audience :: Information Technology',
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
