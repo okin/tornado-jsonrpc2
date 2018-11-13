@@ -1,4 +1,5 @@
 import json
+from tornado.escape import json_decode
 from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 
 SUPPORTED_VERSIONS = {'2.0', }
@@ -6,7 +7,7 @@ SUPPORTED_VERSIONS = {'2.0', }
 
 def decode(request):
     try:
-        obj = json.loads(request)
+        obj = json_decode(request)
     except json.JSONDecodeError as jsonError:
         raise ParseError(str(jsonError))
 

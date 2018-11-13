@@ -4,10 +4,10 @@ These tests follow the examples from the JSON-RPC 2.0 specification.
 For testing purposes an example backend is implemented.
 """
 
-import json
 import pytest
 import functools
 import tornado.web
+from tornado.escape import json_encode, json_decode
 
 from tornado_jsonrpc2.handler import JSONRPCHandler
 from tornado_jsonrpc2.exceptions import MethodNotFound
@@ -89,11 +89,11 @@ def jsonrpc_fetch(http_client, test_url):
 @pytest.mark.gen_test
 def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response):
     response = yield jsonrpc_fetch(
-        body=json.dumps(jrequest)
+        body=json_encode(jrequest)
     )
     assert 200 == response.code
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
     assert json_response == expected_response
 
 
@@ -106,11 +106,11 @@ def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response)
 @pytest.mark.gen_test
 def testRPCWithNamedParameters(jsonrpc_fetch, jrequest, expected_response):
     response = yield jsonrpc_fetch(
-        body=json.dumps(jrequest)
+        body=json_encode(jrequest)
     )
     assert 200 == response.code
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
     assert json_response == expected_response
 
 
@@ -121,7 +121,7 @@ def testRPCWithNamedParameters(jsonrpc_fetch, jrequest, expected_response):
 @pytest.mark.gen_test
 def testRPCNotification(jsonrpc_fetch, notification_request):
     response = yield jsonrpc_fetch(
-        body=json.dumps(notification_request)
+        body=json_encode(notification_request)
     )
     assert 200 == response.code
     assert not response.body  # nothing returned for notification
@@ -131,10 +131,10 @@ def testRPCNotification(jsonrpc_fetch, notification_request):
 def testNonExistingMethod(jsonrpc_fetch):
     response = yield jsonrpc_fetch(
         raise_error=False,
-        body=json.dumps({"jsonrpc": "2.0", "method": "foobar", "id": "1"})
+        body=json_encode({"jsonrpc": "2.0", "method": "foobar", "id": "1"})
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     # tornado_jsonrpc2 uses a more detailed response and therefore this isn't
     # the exact return value as found in the specification.
@@ -152,7 +152,7 @@ def testCallWithInvalidJSON(jsonrpc_fetch):
         body='{"jsonrpc": "2.0", "method": "foobar, "params": "bar", "baz]'
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     # tornado_jsonrpc2 uses a more detailed response and therefore this isn't
     # the exact return value as found in the specification.
@@ -167,10 +167,10 @@ def testCallWithInvalidJSON(jsonrpc_fetch):
 def testCallWithInvalidRequest(jsonrpc_fetch):
     response = yield jsonrpc_fetch(
         raise_error=False,
-        body=json.dumps({"jsonrpc": "2.0", "method": 1, "params": "bar"})
+        body=json_encode({"jsonrpc": "2.0", "method": 1, "params": "bar"})
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     # tornado_jsonrpc2 uses a more detailed response and therefore this isn't
     # the exact return value as found in the specification.
@@ -191,7 +191,7 @@ def testBatchCallWithInvalidJSON(jsonrpc_fetch):
 ]'''
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     # tornado_jsonrpc2 uses a more detailed response and therefore this isn't
     # the exact return value as found in the specification.
@@ -209,7 +209,7 @@ def testEmptyBatchCall(jsonrpc_fetch):
         body='[]'
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     # tornado_jsonrpc2 uses a more detailed response and therefore this isn't
     # the exact return value as found in the specification.
@@ -227,7 +227,7 @@ def testBatchCallWithInvalidRequest(jsonrpc_fetch):
         body='[1]'
     )
 
-    json_response = json.loads(response.body)
+    json_response = json_decode(response.body)
 
     assert isinstance(json_response, list)
     assert 1 == len(json_response)
@@ -249,7 +249,7 @@ def testBatchCallWithInvalidRequests(jsonrpc_fetch):
         body='[1,2,3]'
     )
 
-    json_responses = json.loads(response.body)
+    json_responses = json_decode(response.body)
 
     assert isinstance(json_responses, list)
     assert 3 == len(json_responses)
@@ -281,7 +281,7 @@ def testBatchCall(jsonrpc_fetch):
 ]'''
     )
 
-    json_responses = json.loads(response.body)
+    json_responses = json_decode(response.body)
 
     assert isinstance(json_responses, list)
     assert 5 == len(json_responses)
