@@ -96,10 +96,6 @@ class JSONRPCRequest(JSONRPCStyleRequest):
         return self._is_notification
 
     @property
-    def method(self):
-        return self._method
-
-    @property
     def params(self):
         if self._params is None:
             raise AttributeError("No params given.")
