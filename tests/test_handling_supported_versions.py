@@ -9,6 +9,7 @@ from tornado_jsonrpc2.handler import JSONRPCHandler
 @pytest.fixture
 def app(request):
     async def version(request):
+        print("Handling {!r}".format(request))
         return request.version
 
     return tornado.web.Application([
