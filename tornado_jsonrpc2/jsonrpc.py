@@ -37,7 +37,7 @@ def process_request(request, version=None):
         elif request_version not in SUPPORTED_VERSIONS:
             return JSONRPCRequest(**request)
     except KeyError as kerr:
-        return InvalidRequest("Missing member {!s}".format(kerr),
+        return InvalidRequest('Missing member {!s}'.format(kerr),
                               JSONRPCStyleRequest(**request))
     except InvalidRequest as inverr:
         return InvalidRequest(str(inverr), JSONRPCStyleRequest(**request))
@@ -126,7 +126,7 @@ class JSONRPC1Request(JSONRPCRequest):
         super().__init__(**kwargs)
 
         if 'id' not in kwargs:
-            raise InvalidRequest('Missing member "id"!')
+            raise InvalidRequest('Missing member "id"')
 
         if self._id is None:
             self._is_notification = True
