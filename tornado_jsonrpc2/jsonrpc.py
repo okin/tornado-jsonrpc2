@@ -63,9 +63,6 @@ class JSONRPCStyleRequest:
 
     @property
     def params(self):
-        if self._params is None:
-            raise AttributeError("No params given.")
-
         return self._params
 
     @property
