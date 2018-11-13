@@ -19,9 +19,7 @@ def test_invalid_parameter_type(jsonrpc_fetch):
         "params": "nope",  # Has to be list or dict
         "id": 1
     }
-    response = yield jsonrpc_fetch(
-        body=json.dumps(request)
-    )
+    response = yield jsonrpc_fetch(body=json.dumps(request))
     assert 200 == response.code
 
     response = json.loads(response.body)
