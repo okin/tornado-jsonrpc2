@@ -52,7 +52,7 @@ def test_invalid_request(jsonrpc_fetch):
             'code': -32600,
             'message': "Invalid Request: Missing member 'method'"
         },
-        'id': None,
+        'id': 1,
         'jsonrpc': '2.0'
     }
     assert response == expected_response

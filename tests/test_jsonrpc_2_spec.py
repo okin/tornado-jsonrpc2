@@ -15,7 +15,7 @@ from tornado_jsonrpc2.exceptions import MethodNotFound
 
 class JSONRPCSpecBackend:
     """
-    Test backend modeled after the JSON-RPC 2.0 soec,
+    Test backend modeled after the JSON-RPC 2.0 spec.
     """
     def subtract(self, minuend, subtrahend):
         return minuend - subtrahend
@@ -61,7 +61,7 @@ def app():
     simple_creator = functools.partial(create_response, backend=JSONRPCSpecBackend())
 
     return tornado.web.Application([
-        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator}),
+        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator, "version": "2.0"}),
     ])
 
 

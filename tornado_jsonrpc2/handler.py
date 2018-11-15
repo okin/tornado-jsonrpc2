@@ -10,15 +10,16 @@ __all__ = ("JSONRPCHandler", )
 
 
 class JSONRPCHandler(RequestHandler):
-    def initialize(self, response_creator):
+    def initialize(self, response_creator, version=None):
         self.create_response = response_creator
+        self.version = version
 
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
 
     async def post(self):
         try:
-            request = decode(self.request.body)
+            request = decode(self.request.body, version=self.version)
         except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
             self.write(self.transform_exception(error))
             return
@@ -52,11 +53,18 @@ class JSONRPCHandler(RequestHandler):
         try:
             method_result = await self.create_response(request)
             if not request.is_notification:
-                return {
-                    "jsonrpc": "2.0",
-                    "id": request.id,
-                    "result": method_result
-                }
+                if request.version == '1.0':
+                    return {
+                        "id": request.id,
+                        "result": method_result,
+                        "error": None
+                    }
+                else:
+                    return {
+                        "jsonrpc": "2.0",
+                        "id": request.id,
+                        "result": method_result
+                    }
         except (MethodNotFound, InvalidParams) as error:
             if not request.is_notification:
                 return self.transform_exception(error, request)
@@ -67,13 +75,34 @@ class JSONRPCHandler(RequestHandler):
     def transform_exception(self, exception, request=None):
         assert isinstance(exception, JSONRPCError)
 
-        request_id = request.id if request else None
+        try:
+            request = exception.args[1]
+            exception = exception.__class__(exception.args[0])
+        except (IndexError, TypeError):
+            pass
 
-        return {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "error": {
-                "code": exception.error_code,
-                "message": "{}: {}".format(exception.short_message, str(exception))
+        try:
+            request_id = request.id
+        except AttributeError:
+            request_id = None
+
+        version = self.version or request.version
+
+        if version == '1.0':
+            return {
+                "id": request_id,
+                "result": None,
+                "error": {
+                    "code": exception.error_code,
+                    "message": "{}: {}".format(exception.short_message, str(exception))
+                }
             }
-        }
+        else:
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "error": {
+                    "code": exception.error_code,
+                    "message": "{}: {}".format(exception.short_message, str(exception))
+                }
+            }
