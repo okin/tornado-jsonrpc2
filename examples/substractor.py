@@ -33,6 +33,10 @@ def make_app():
 
     return tornado.web.Application([
         (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator}),
+        (r"/jsonrpc1", JSONRPCHandler, {"version": "1.0",
+                                        "response_creator": simple_creator}),
+        (r"/jsonrpc2", JSONRPCHandler, {"version": "2.0",
+                                        "response_creator": simple_creator}),
     ])
 
 
