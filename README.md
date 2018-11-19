@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/okin/tornado-jsonrpc2/branch/master/graph/badge.svg)](https://codecov.io/gh/okin/tornado-jsonrpc2)
 
 A [JSON-RPC](https://www.jsonrpc.org/) request handler for [Tornado](https://www.tornadoweb.org/).
+
 It follows the specifications for [JSON-RPC 2.0](https://www.jsonrpc.org/specification) and [1.0](https://www.jsonrpc.org/specification_v1).
 Differences between the versions are described [here](http://www.simple-is-better.org/rpc/#differences-between-1-0-and-2-0) in short form.
 By default both versions will be handled and answers are made according to the version detected for the request.
