@@ -102,8 +102,7 @@ It is possible to configure the handler to only work with one specific
 version by adding a key _version_ with the value `"1.0"` or `"2.0"` to
 the route spec.
 
-The following example extends the orignal route by adding a specific
-route for each version.
+The following example adds a specific route for each version:
 ```Python
 def make_app():
     simple_creator = functools.partial(create_response,
