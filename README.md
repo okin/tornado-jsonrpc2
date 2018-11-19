@@ -3,7 +3,10 @@
 [![Build Status](https://travis-ci.org/okin/tornado-jsonrpc2.svg?branch=master)](https://travis-ci.org/okin/tornado-jsonrpc2)
 [![codecov](https://codecov.io/gh/okin/tornado-jsonrpc2/branch/master/graph/badge.svg)](https://codecov.io/gh/okin/tornado-jsonrpc2)
 
-A request handler for tornado that implements the [JSON-RPC 2.0 specification](https://www.jsonrpc.org/specification).
+A [JSON-RPC](https://www.jsonrpc.org/) request handler for [Tornado](https://www.tornadoweb.org/).
+It follows the specifications for [JSON-RPC 2.0](https://www.jsonrpc.org/specification) and [1.0](https://www.jsonrpc.org/specification_v1).
+Differences between the versions are described [here](http://www.simple-is-better.org/rpc/#differences-between-1-0-and-2-0) in short form.
+By default both versions will be handled and answers are made according to the version detected for the request.
 
 The aim is to have a spec-compliant handler that can be set up in a flexible way.
 
@@ -88,4 +91,28 @@ You can also name the parameters:
 $ curl --insecure --data '{"jsonrpc": "2.0", "method": "subtract", "params": {"minuend": 5, "subtrahend": 1}, "id": 1}' http://localhost:8888/jsonrpc
 
 {"jsonrpc": "2.0", "id": 1, "result": 4}
+```
+
+
+#### Handling specific JSON-RPC versions
+
+By default the handler will process JSON-RPC 1.0 and 2.0.
+It is possible to configure the handler to only work with one specific
+version by adding a key _version_ with the value `"1.0"` or `"2.0"` to
+the route spec.
+
+The following example extends the orignal route by adding a specific
+route for each version.
+```Python
+def make_app():
+    simple_creator = functools.partial(create_response,
+                                       backend=MyBackend())
+
+    return tornado.web.Application([
+        (r"/jsonrpc", JSONRPCHandler, {"response_creator": simple_creator}),
+        (r"/jsonrpc1", JSONRPCHandler, {"version": "1.0",
+                                        "response_creator": simple_creator}),
+        (r"/jsonrpc2", JSONRPCHandler, {"version": "2.0",
+                                        "response_creator": simple_creator}),
+    ])
 ```
