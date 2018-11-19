@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="tornado-jsonrpc2",
-    version="0.2.dev",
+    version="0.2",
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
-    description="JSON-RPC 2.0 handler for Tornado.",
+    description="JSON-RPC request handler for Tornado.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="tornado jsonrpc jsonrpc2 rpc json requesthandler",

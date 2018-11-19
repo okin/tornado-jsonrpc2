@@ -1,4 +1,4 @@
-# 0.2 - in development
+# 0.2 - 2018-11-19
 
 * Use tornados json encoding / decoding.
 * Added support for JSON-RPC 1.0.
