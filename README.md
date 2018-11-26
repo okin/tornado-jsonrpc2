@@ -1,7 +1,7 @@
 # 🐍🌪️ tornado-jsonrpc2
 
-[![Build Status](https://travis-ci.org/okin/tornado-jsonrpc2.svg?branch=master)](https://travis-ci.org/okin/tornado-jsonrpc2)
-[![codecov](https://codecov.io/gh/okin/tornado-jsonrpc2/branch/master/graph/badge.svg)](https://codecov.io/gh/okin/tornado-jsonrpc2)
+[![Build Status](https://travis-ci.org/okin/tornado-jsonrpc2.svg?branch=development)](https://travis-ci.org/okin/tornado-jsonrpc2)
+[![codecov](https://codecov.io/gh/okin/tornado-jsonrpc2/branch/development/graph/badge.svg)](https://codecov.io/gh/okin/tornado-jsonrpc2)
 
 A [JSON-RPC](https://www.jsonrpc.org/) request handler for [Tornado](https://www.tornadoweb.org/).
 
