@@ -34,7 +34,7 @@ class JSONRPCHandler(RequestHandler):
                     responses.append(self.exception_to_jsonrpc(call))
                     continue
 
-                message = await self._get_return_message(call)
+                message = await self.create_jsonrpc_response(call)
                 if message:
                     responses.append(message)
 
@@ -43,11 +43,11 @@ class JSONRPCHandler(RequestHandler):
                 # see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write
                 self.write(json_encode(responses))
         else:
-            message = await self._get_return_message(request)
+            message = await self.create_jsonrpc_response(request)
             if message:
                 self.write(message)
 
-    async def _get_return_message(self, request):
+    async def create_jsonrpc_response(self, request):
         try:
             request.validate()
         except InvalidRequest as error:
