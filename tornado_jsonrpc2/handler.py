@@ -6,19 +6,15 @@ from .exceptions import (
     JSONRPCError, ParseError, InvalidRequest, MethodNotFound,
     InvalidParams, InternalError, EmptyBatchRequest)
 
-__all__ = ("JSONRPCHandler", )
+__all__ = ("BasicJSONRPCHandler", "JSONRPCHandler")
 
 
-class JSONRPCHandler(RequestHandler):
-    def initialize(self, response_creator, version=None):
-        self.create_response = response_creator
+class BasicJSONRPCHandler(RequestHandler):
+    def initialize(self, version=None):
         self.version = version
 
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
-
-    async def post(self):
-        return await self.handle_jsonrpc(self.request)
 
     async def handle_jsonrpc(self, request):
         request = self.decode_jsonrpc_request(request)
@@ -68,7 +64,7 @@ class JSONRPCHandler(RequestHandler):
             return self.exception_to_jsonrpc(error, request)
 
         try:
-            method_result = await self.create_response(request)
+            method_result = await self.compute_result(request)
             if not request.is_notification:
                 if request.version == '1.0':
                     return {"id": request.id,
@@ -113,3 +109,18 @@ class JSONRPCHandler(RequestHandler):
             return {"jsonrpc": "2.0",
                     "id": request_id,
                     "error": error}
+
+    async def compute_result(self, request):
+        raise NotImplementedError("Computation of results has to be done in ")
+
+
+class JSONRPCHandler(BasicJSONRPCHandler):
+    def initialize(self, response_creator, version=None):
+        super().initialize(version=version)
+        self.create_response = response_creator
+
+    async def post(self):
+        return await self.handle_jsonrpc(self.request)
+
+    async def compute_result(self, request):
+        return await self.create_response(request)
