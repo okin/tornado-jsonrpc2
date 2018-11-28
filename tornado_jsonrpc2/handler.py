@@ -6,52 +6,65 @@ from .exceptions import (
     JSONRPCError, ParseError, InvalidRequest, MethodNotFound,
     InvalidParams, InternalError, EmptyBatchRequest)
 
-__all__ = ("JSONRPCHandler", )
+__all__ = ("BasicJSONRPCHandler", "JSONRPCHandler")
 
 
-class JSONRPCHandler(RequestHandler):
-    def initialize(self, response_creator, version=None):
-        self.create_response = response_creator
+class BasicJSONRPCHandler(RequestHandler):
+    def initialize(self, version=None):
         self.version = version
 
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
 
-    async def post(self):
-        try:
-            request = decode(self.request.body, version=self.version)
-        except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
-            self.write(self.transform_exception(error))
+    async def handle_jsonrpc(self, request):
+        request = self.decode_jsonrpc_request(request)
+        if not request:
             return
 
+        await self.process_jsonrpc_request(request)
+
+    def decode_jsonrpc_request(self, request):
+        try:
+            return decode(request.body, version=self.version)
+        except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
+            self.write(self.exception_to_jsonrpc(error))
+
+    async def process_jsonrpc_request(self, request):
         if isinstance(request, list):  # batch request
-            responses = []
-            for call in request:
-                if isinstance(call, JSONRPCError):
-                    responses.append(self.transform_exception(call))
-                    continue
-
-                message = await self._get_return_message(call)
-                if message:
-                    responses.append(message)
-
+            responses = await self.process_jsonrpc_batch_request(request)
             if responses:
                 # Twisted won't write lists for security reasons
                 # see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write
                 self.write(json_encode(responses))
         else:
-            message = await self._get_return_message(request)
+            message = await self.process_jsonrpc_single_request(request)
             if message:
                 self.write(message)
 
-    async def _get_return_message(self, request):
+    async def process_jsonrpc_batch_request(self, request):
+        responses = []
+        for call in request:
+            if isinstance(call, JSONRPCError):
+                responses.append(self.exception_to_jsonrpc(call))
+                continue
+
+            message = await self.create_jsonrpc_response(call)
+            if message:
+                responses.append(message)
+
+        return responses
+
+    async def process_jsonrpc_single_request(self, request):
+        return await self.create_jsonrpc_response(request)
+
+    async def create_jsonrpc_response(self, request):
         try:
             request.validate()
         except InvalidRequest as error:
-            return self.transform_exception(error, request)
+            return self.exception_to_jsonrpc(error, request)
 
         try:
-            method_result = await self.create_response(request)
+            method_result = await self.compute_result(request)
             if not request.is_notification:
                 if request.version == '1.0':
                     return {"id": request.id,
@@ -63,12 +76,12 @@ class JSONRPCHandler(RequestHandler):
                             "result": method_result}
         except (MethodNotFound, InvalidParams) as error:
             if not request.is_notification:
-                return self.transform_exception(error, request)
+                return self.exception_to_jsonrpc(error, request)
         except Exception as error:
             if not request.is_notification:
-                return self.transform_exception(InternalError(str(error)), request)
+                return self.exception_to_jsonrpc(InternalError(str(error)), request)
 
-    def transform_exception(self, exception, request=None):
+    def exception_to_jsonrpc(self, exception, request=None):
         assert isinstance(exception, JSONRPCError)
 
         try:
@@ -96,3 +109,18 @@ class JSONRPCHandler(RequestHandler):
             return {"jsonrpc": "2.0",
                     "id": request_id,
                     "error": error}
+
+    async def compute_result(self, request):
+        raise NotImplementedError("Handler does not create an result.")
+
+
+class JSONRPCHandler(BasicJSONRPCHandler):
+    def initialize(self, response_creator, version=None):
+        super().initialize(version=version)
+        self.create_response = response_creator
+
+    async def post(self):
+        return await self.handle_jsonrpc(self.request)
+
+    async def compute_result(self, request):
+        return await self.create_response(request)
