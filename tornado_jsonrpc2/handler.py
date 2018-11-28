@@ -24,14 +24,14 @@ class JSONRPCHandler(RequestHandler):
         try:
             request = decode(request.body, version=self.version)
         except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
-            self.write(self.transform_exception(error))
+            self.write(self.exception_to_jsonrpc(error))
             return
 
         if isinstance(request, list):  # batch request
             responses = []
             for call in request:
                 if isinstance(call, JSONRPCError):
-                    responses.append(self.transform_exception(call))
+                    responses.append(self.exception_to_jsonrpc(call))
                     continue
 
                 message = await self._get_return_message(call)
@@ -51,7 +51,7 @@ class JSONRPCHandler(RequestHandler):
         try:
             request.validate()
         except InvalidRequest as error:
-            return self.transform_exception(error, request)
+            return self.exception_to_jsonrpc(error, request)
 
         try:
             method_result = await self.create_response(request)
@@ -66,12 +66,12 @@ class JSONRPCHandler(RequestHandler):
                             "result": method_result}
         except (MethodNotFound, InvalidParams) as error:
             if not request.is_notification:
-                return self.transform_exception(error, request)
+                return self.exception_to_jsonrpc(error, request)
         except Exception as error:
             if not request.is_notification:
-                return self.transform_exception(InternalError(str(error)), request)
+                return self.exception_to_jsonrpc(InternalError(str(error)), request)
 
-    def transform_exception(self, exception, request=None):
+    def exception_to_jsonrpc(self, exception, request=None):
         assert isinstance(exception, JSONRPCError)
 
         try:
