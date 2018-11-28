@@ -54,17 +54,13 @@ class JSONRPCHandler(RequestHandler):
             method_result = await self.create_response(request)
             if not request.is_notification:
                 if request.version == '1.0':
-                    return {
-                        "id": request.id,
-                        "result": method_result,
-                        "error": None
-                    }
+                    return {"id": request.id,
+                            "result": method_result,
+                            "error": None}
                 else:
-                    return {
-                        "jsonrpc": "2.0",
-                        "id": request.id,
-                        "result": method_result
-                    }
+                    return {"jsonrpc": "2.0",
+                            "id": request.id,
+                            "result": method_result}
         except (MethodNotFound, InvalidParams) as error:
             if not request.is_notification:
                 return self.transform_exception(error, request)
@@ -88,21 +84,15 @@ class JSONRPCHandler(RequestHandler):
 
         version = self.version or request.version
 
+        error = {"code": exception.error_code,
+                 "message": "{}: {}".format(exception.short_message,
+                                            str(exception))}
+
         if version == '1.0':
-            return {
-                "id": request_id,
-                "result": None,
-                "error": {
-                    "code": exception.error_code,
-                    "message": "{}: {}".format(exception.short_message, str(exception))
-                }
-            }
+            return {"id": request_id,
+                    "result": None,
+                    "error": error}
         else:
-            return {
-                "jsonrpc": "2.0",
-                "id": request_id,
-                "error": {
-                    "code": exception.error_code,
-                    "message": "{}: {}".format(exception.short_message, str(exception))
-                }
-            }
+            return {"jsonrpc": "2.0",
+                    "id": request_id,
+                    "error": error}
