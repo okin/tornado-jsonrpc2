@@ -18,8 +18,11 @@ class JSONRPCHandler(RequestHandler):
         self.set_header('Content-Type', 'application/json')
 
     async def post(self):
+        return await self.handle_jsonrpc(self.request)
+
+    async def handle_jsonrpc(self, request):
         try:
-            request = decode(self.request.body, version=self.version)
+            request = decode(request.body, version=self.version)
         except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
             self.write(self.transform_exception(error))
             return
