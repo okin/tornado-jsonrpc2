@@ -21,31 +21,45 @@ class JSONRPCHandler(RequestHandler):
         return await self.handle_jsonrpc(self.request)
 
     async def handle_jsonrpc(self, request):
-        try:
-            request = decode(request.body, version=self.version)
-        except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
-            self.write(self.exception_to_jsonrpc(error))
+        request = self.decode_jsonrpc_request(request)
+        if not request:
             return
 
+        await self.process_jsonrpc_request(request)
+
+    def decode_jsonrpc_request(self, request):
+        try:
+            return decode(request.body, version=self.version)
+        except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
+            self.write(self.exception_to_jsonrpc(error))
+
+    async def process_jsonrpc_request(self, request):
         if isinstance(request, list):  # batch request
-            responses = []
-            for call in request:
-                if isinstance(call, JSONRPCError):
-                    responses.append(self.exception_to_jsonrpc(call))
-                    continue
-
-                message = await self.create_jsonrpc_response(call)
-                if message:
-                    responses.append(message)
-
+            responses = await self.process_jsonrpc_batch_request(request)
             if responses:
                 # Twisted won't write lists for security reasons
                 # see http://www.tornadoweb.org/en/stable/web.html#tornado.web.RequestHandler.write
                 self.write(json_encode(responses))
         else:
-            message = await self.create_jsonrpc_response(request)
+            message = await self.process_jsonrpc_single_request(request)
             if message:
                 self.write(message)
+
+    async def process_jsonrpc_batch_request(self, request):
+        responses = []
+        for call in request:
+            if isinstance(call, JSONRPCError):
+                responses.append(self.exception_to_jsonrpc(call))
+                continue
+
+            message = await self.create_jsonrpc_response(call)
+            if message:
+                responses.append(message)
+
+        return responses
+
+    async def process_jsonrpc_single_request(self, request):
+        return await self.create_jsonrpc_response(request)
 
     async def create_jsonrpc_response(self, request):
         try:
