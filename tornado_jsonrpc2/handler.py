@@ -111,7 +111,7 @@ class BasicJSONRPCHandler(RequestHandler):
                     "error": error}
 
     async def compute_result(self, request):
-        raise NotImplementedError("Computation of results has to be done in ")
+        raise NotImplementedError("Handler does not create an result.")
 
 
 class JSONRPCHandler(BasicJSONRPCHandler):
