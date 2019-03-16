@@ -95,7 +95,12 @@ class BasicJSONRPCHandler(RequestHandler):
         except AttributeError:
             request_id = None
 
-        version = self.version or request.version
+        try:
+            version = self.version or request.version
+        except AttributeError:
+            # No version set and could not be determined from request
+            # We want to answer with the latest version in that case.
+            version = '2.0'
 
         error = {"code": exception.error_code,
                  "message": "{}: {}".format(exception.short_message,
