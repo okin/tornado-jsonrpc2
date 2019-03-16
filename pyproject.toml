@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tornado-jsonrpc2"
-version = "0.4"
+version = "0.4.dev"
 description = "JSON-RPC request handler for Tornado."
 authors = ["Niko Wenselowski <der@nik0.de>"]
 license = "AGPL-3.0"
