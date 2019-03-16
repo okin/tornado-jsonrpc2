@@ -95,7 +95,7 @@ $ curl --insecure --data '{"jsonrpc": "2.0", "method": "subtract", "params": {"m
 ```
 
 
-#### Handling specific JSON-RPC versions
+### Handling specific JSON-RPC versions
 
 By default the handler will process JSON-RPC 1.0 and 2.0.
 It is possible to configure the handler to only work with one specific
