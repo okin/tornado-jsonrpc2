@@ -20,9 +20,9 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=['tornado>=5.0'],
     extras_require={
-        'test': ['pytest-tornado'],
+        'test': ['pytest-tornado5'],
     },
-    tests_require=['pytest-tornado'],
+    tests_require=['pytest-tornado5'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
