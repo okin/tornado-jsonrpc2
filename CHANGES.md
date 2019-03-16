@@ -1,3 +1,10 @@
+# 0.4 - 2019-03-16
+
+* Fix a bug where no valid JSON-RPC response was returned if the used JSON-RPC
+  version could not be determined.
+  A response formatted for the latest version will be returned.
+  This only affects handlers without explicit version setting.
+
 # 0.3 - 2018-11-28
 
 * Implementing a custom handler should now be easier.
