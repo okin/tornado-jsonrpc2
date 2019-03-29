@@ -10,7 +10,7 @@ env:
   - TORNADO_VERSION=6
 
 install:
-  - pip install ~=tornado=$TORNADO_VERSION
+  - pip install tornado~=$TORNADO_VERSION
   - pip install -e .[test]
   - pip install pytest-cov codecov
 
