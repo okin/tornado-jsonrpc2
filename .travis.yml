@@ -1,9 +1,16 @@
 language: python
+cache: pip
+dist: xenial
 python:
   - "3.6"
-  - "3.7-dev"  # 3.7 development branch
+  - "3.7"
+
+env:
+  - TORNADO_VERSION=5.0
+  - TORNADO_VERSION=6.0
 
 install:
+  - pip install tornado~=$TORNADO_VERSION
   - pip install -e .[test]
   - pip install pytest-cov codecov
 
