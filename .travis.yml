@@ -6,8 +6,8 @@ python:
   - "3.7"
 
 env:
-  - TORNADO_VERSION=5
-  - TORNADO_VERSION=6
+  - TORNADO_VERSION=5.0
+  - TORNADO_VERSION=6.0
 
 install:
   - pip install tornado~=$TORNADO_VERSION
