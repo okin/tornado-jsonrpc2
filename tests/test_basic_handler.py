@@ -18,12 +18,12 @@ def app():
 
 
 @pytest.mark.gen_test
-def test_compute_function_has_to_be_implemented_by_subclass(http_client, base_url):
+async def test_compute_function_has_to_be_implemented_by_subclass(http_client, base_url):
     request = {"method": "foo",
                "params": [],
                "id": 1}
 
-    response = yield http_client.fetch(base_url + '/dummy',
+    response = await http_client.fetch(base_url + '/dummy',
                                        method="POST",
                                        headers={'Content-Type': 'application/json'},
                                        body=json_encode(request))

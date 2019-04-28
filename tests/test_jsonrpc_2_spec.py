@@ -87,8 +87,8 @@ def jsonrpc_fetch(http_client, test_url):
      {"jsonrpc": "2.0", "result": -19, "id": 2}]
 ])
 @pytest.mark.gen_test
-def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response):
-    response = yield jsonrpc_fetch(
+async def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response):
+    response = await jsonrpc_fetch(
         body=json_encode(jrequest)
     )
     assert 200 == response.code
@@ -104,8 +104,8 @@ def testRPCWithConditionalParameters(jsonrpc_fetch, jrequest, expected_response)
      {"jsonrpc": "2.0", "result": 19, "id": 4}]
 ])
 @pytest.mark.gen_test
-def testRPCWithNamedParameters(jsonrpc_fetch, jrequest, expected_response):
-    response = yield jsonrpc_fetch(
+async def testRPCWithNamedParameters(jsonrpc_fetch, jrequest, expected_response):
+    response = await jsonrpc_fetch(
         body=json_encode(jrequest)
     )
     assert 200 == response.code
@@ -119,8 +119,8 @@ def testRPCWithNamedParameters(jsonrpc_fetch, jrequest, expected_response):
     {"jsonrpc": "2.0", "method": "foobar"}
 ])
 @pytest.mark.gen_test
-def testRPCNotification(jsonrpc_fetch, notification_request):
-    response = yield jsonrpc_fetch(
+async def testRPCNotification(jsonrpc_fetch, notification_request):
+    response = await jsonrpc_fetch(
         body=json_encode(notification_request)
     )
     assert 200 == response.code
@@ -128,8 +128,8 @@ def testRPCNotification(jsonrpc_fetch, notification_request):
 
 
 @pytest.mark.gen_test
-def testNonExistingMethod(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testNonExistingMethod(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body=json_encode({"jsonrpc": "2.0", "method": "foobar", "id": "1"})
     )
@@ -146,8 +146,8 @@ def testNonExistingMethod(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testCallWithInvalidJSON(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testCallWithInvalidJSON(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='{"jsonrpc": "2.0", "method": "foobar, "params": "bar", "baz]'
     )
@@ -164,8 +164,8 @@ def testCallWithInvalidJSON(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testCallWithInvalidRequest(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testCallWithInvalidRequest(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body=json_encode({"jsonrpc": "2.0", "method": 1, "params": "bar"})
     )
@@ -182,8 +182,8 @@ def testCallWithInvalidRequest(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testBatchCallWithInvalidJSON(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testBatchCallWithInvalidJSON(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='''[
   {"jsonrpc": "2.0", "method": "sum", "params": [1,2,4], "id": "1"},
@@ -203,8 +203,8 @@ def testBatchCallWithInvalidJSON(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testEmptyBatchCall(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testEmptyBatchCall(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='[]'
     )
@@ -221,8 +221,8 @@ def testEmptyBatchCall(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testBatchCallWithInvalidRequest(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testBatchCallWithInvalidRequest(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='[1]'
     )
@@ -243,8 +243,8 @@ def testBatchCallWithInvalidRequest(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testBatchCallWithInvalidRequests(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testBatchCallWithInvalidRequests(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='[1,2,3]'
     )
@@ -268,8 +268,8 @@ def testBatchCallWithInvalidRequests(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testBatchCall(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testBatchCall(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='''[
     {"jsonrpc": "2.0", "method": "sum", "params": [1,2,4], "id": "1"},
@@ -322,8 +322,8 @@ def testBatchCall(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def testNotificationOnlyBatchCall(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def testNotificationOnlyBatchCall(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='''[
     {"jsonrpc": "2.0", "method": "notify_sum", "params": [1,2,4]},

@@ -8,6 +8,7 @@ python:
 
 env:
   - TORNADO_VERSION=5.0
+  - TORNADO_VERSION=5.1
   - TORNADO_VERSION=6.0
 
 install:

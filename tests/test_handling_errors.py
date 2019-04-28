@@ -32,9 +32,9 @@ def jsonrpc_fetch(http_client, test_url):
 
 
 @pytest.mark.gen_test
-def test_handling_an_error_without_given_version(app, jsonrpc_fetch):
+async def test_handling_an_error_without_given_version(app, jsonrpc_fetch):
     # Sending an invalid JSON string
-    response = yield jsonrpc_fetch(
+    response = await jsonrpc_fetch(
         raise_error=False,
         body='{"id": 1, "method": "irrelevant", "params": [}'
     )

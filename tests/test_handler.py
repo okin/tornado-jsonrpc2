@@ -33,8 +33,8 @@ def jsonrpc_fetch(http_client, test_url):
 
 
 @pytest.mark.gen_test
-def test_calling_with_unsupported_version(app, jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def test_calling_with_unsupported_version(app, jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         raise_error=False,
         body=json_encode({"jsonrpc": "3000", "method": "foobar", "id": "1"})
     )
