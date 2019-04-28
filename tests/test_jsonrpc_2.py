@@ -12,14 +12,14 @@ import pytest
 
 
 @pytest.mark.gen_test
-def test_invalid_parameter_type(jsonrpc_fetch):
+async def test_invalid_parameter_type(jsonrpc_fetch):
     request = {
         "jsonrpc": "2.0",
         "method": "foo",
         "params": "nope",  # Has to be list or dict
         "id": 1
     }
-    response = yield jsonrpc_fetch(body=json.dumps(request))
+    response = await jsonrpc_fetch(body=json.dumps(request))
     assert 200 == response.code
 
     response = json.loads(response.body)

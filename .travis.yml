@@ -4,9 +4,11 @@ dist: xenial
 python:
   - "3.6"
   - "3.7"
+  - "3.8-dev"
 
 env:
   - TORNADO_VERSION=5.0
+  - TORNADO_VERSION=5.1
   - TORNADO_VERSION=6.0
 
 install:
