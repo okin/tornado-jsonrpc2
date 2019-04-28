@@ -76,8 +76,8 @@ def jsonrpc_fetch(http_client, test_url):
      {"result": 1, "error": None, "id": 101}]
 ])
 @pytest.mark.gen_test
-def test_succesful_rpc(jsonrpc_fetch, client_request, expected_response):
-    response = yield jsonrpc_fetch(body=json.dumps(client_request))
+async def test_succesful_rpc(jsonrpc_fetch, client_request, expected_response):
+    response = await jsonrpc_fetch(body=json.dumps(client_request))
     assert 200 == response.code
 
     jresponse = json.loads(response.body)
@@ -98,8 +98,8 @@ def assert_response_conformity(response):
     {"method": "userLeft", "params": ["user3"], "id": None},
 ])
 @pytest.mark.gen_test
-def test_notification(jsonrpc_fetch, client_request):
-    response = yield jsonrpc_fetch(body=json.dumps(client_request))
+async def test_notification(jsonrpc_fetch, client_request):
+    response = await jsonrpc_fetch(body=json.dumps(client_request))
     assert 200 == response.code
 
     assert not response.body

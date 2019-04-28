@@ -40,13 +40,13 @@ def jsonrpc_fetch(http_client, test_url):
 
 
 @pytest.mark.gen_test
-def test_invalid_parameter_type(jsonrpc_fetch):
+async def test_invalid_parameter_type(jsonrpc_fetch):
     request = {
         "method": "foo",
         "params": "nope",  # Has to be list
         "id": 1
     }
-    response = yield jsonrpc_fetch(body=json_encode(request))
+    response = await jsonrpc_fetch(body=json_encode(request))
     assert 200 == response.code
 
     response = json_decode(response.body)
@@ -63,12 +63,12 @@ def test_invalid_parameter_type(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def test_request_with_missing_id(jsonrpc_fetch):
+async def test_request_with_missing_id(jsonrpc_fetch):
     request = {
         "method": "foo",
         "params": []
     }
-    response = yield jsonrpc_fetch(body=json_encode(request))
+    response = await jsonrpc_fetch(body=json_encode(request))
     assert 200 == response.code
 
     response = json_decode(response.body)
@@ -86,11 +86,11 @@ def test_request_with_missing_id(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def test_request_with_just_params(jsonrpc_fetch):
+async def test_request_with_just_params(jsonrpc_fetch):
     request = {
         "params": []
     }
-    response = yield jsonrpc_fetch(body=json_encode(request))
+    response = await jsonrpc_fetch(body=json_encode(request))
     assert 200 == response.code
 
     response = json_decode(response.body)

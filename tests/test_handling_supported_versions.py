@@ -33,14 +33,14 @@ def jsonrpc_fetch(http_client, test_url):
 
 
 @pytest.mark.gen_test
-def test_mixing_handled_versions(jsonrpc_fetch):
+async def test_mixing_handled_versions(jsonrpc_fetch):
     v1Request = {
         "method": "foo",
         "params": [],
         "id": 1
     }
 
-    response = yield jsonrpc_fetch(body=json_encode(v1Request))
+    response = await jsonrpc_fetch(body=json_encode(v1Request))
     assert 200 == response.code
     response = json_decode(response.body)
     assert response['id'] == v1Request['id']
@@ -52,7 +52,7 @@ def test_mixing_handled_versions(jsonrpc_fetch):
         "method": "foo",
         "id": 2
     }
-    response = yield jsonrpc_fetch(body=json_encode(v2Request))
+    response = await jsonrpc_fetch(body=json_encode(v2Request))
     assert 200 == response.code
     response = json_decode(response.body)
     assert response['id'] == v2Request['id']

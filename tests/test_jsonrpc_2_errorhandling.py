@@ -21,8 +21,8 @@ def app():
 
 
 @pytest.mark.gen_test
-def test_invalid_error_in_responder(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def test_invalid_error_in_responder(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         body=json_encode({"jsonrpc": "2.0", "method": "foo", "id": 1})
     )
     assert 200 == response.code
@@ -40,8 +40,8 @@ def test_invalid_error_in_responder(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def test_invalid_request(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def test_invalid_request(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         body=json_encode({"jsonrpc": "2.0", "id": 1})
     )
     assert 200 == response.code
@@ -59,8 +59,8 @@ def test_invalid_request(jsonrpc_fetch):
 
 
 @pytest.mark.gen_test
-def test_unsupported_jsonrpc_version(jsonrpc_fetch):
-    response = yield jsonrpc_fetch(
+async def test_unsupported_jsonrpc_version(jsonrpc_fetch):
+    response = await jsonrpc_fetch(
         body=json_encode({"jsonrpc": "3000", "id": 1, "method": "foo"})
     )
     assert 200 == response.code
