@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Awaitable, Optional
 
 from tornado.escape import json_encode
 from tornado.web import RequestHandler
@@ -83,7 +83,7 @@ class BasicJSONRPCHandler(RequestHandler):
             if not request.is_notification:
                 return self.exception_to_jsonrpc(InternalError(str(error)), request)
 
-    def exception_to_jsonrpc(self, exception: Exception, request=None) -> dict:
+    def exception_to_jsonrpc(self, exception: JSONRPCError, request=None) -> dict:
         assert isinstance(exception, JSONRPCError)
 
         try:
@@ -122,7 +122,7 @@ class BasicJSONRPCHandler(RequestHandler):
 
 
 class JSONRPCHandler(BasicJSONRPCHandler):
-    def initialize(self, response_creator: Callable, version: Optional[str]=None):
+    def initialize(self, response_creator: Awaitable, version: Optional[str]=None):
         super().initialize(version=version)
         self.create_response = response_creator
 
