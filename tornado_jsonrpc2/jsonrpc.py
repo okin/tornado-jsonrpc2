@@ -2,6 +2,8 @@ import json
 from tornado.escape import json_decode
 from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 
+__all__ = ('decode', )
+
 SUPPORTED_VERSIONS = {'2.0', '1.0'}
 
 
