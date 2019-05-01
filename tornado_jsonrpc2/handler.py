@@ -125,7 +125,7 @@ class JSONRPCHandler(BasicJSONRPCHandler):
         self.create_response = response_creator
 
     async def post(self):
-        return await self.handle_jsonrpc(self.request)
+        await self.handle_jsonrpc(self.request)
 
     async def compute_result(self, request):
         return await self.create_response(request)

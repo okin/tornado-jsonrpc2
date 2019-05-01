@@ -15,7 +15,7 @@ from tornado_jsonrpc2.handler import BasicJSONRPCHandler
 
 class MyHandler(BasicJSONRPCHandler):
         async def post(self):
-            return await self.handle_jsonrpc(self.request)
+            await self.handle_jsonrpc(self.request)
 
         async def compute_result(self, request):
             if request.method == 'fast':
