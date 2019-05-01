@@ -10,7 +10,7 @@ from tornado_jsonrpc2.handler import BasicJSONRPCHandler
 def app():
     class DummyHandler(BasicJSONRPCHandler):
         async def post(self):
-            return await self.handle_jsonrpc(self.request)
+            await self.handle_jsonrpc(self.request)
 
     return tornado.web.Application([
         (r"/dummy", DummyHandler),
