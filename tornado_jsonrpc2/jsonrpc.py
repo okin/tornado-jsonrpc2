@@ -107,10 +107,6 @@ class JSONRPCRequest(JSONRPCStyleRequest):
 
         return self._params
 
-    @property
-    def version(self):
-        return self._version
-
     def validate(self) -> None:
         if self.version not in SUPPORTED_VERSIONS:
             raise InvalidRequest("Unsupported JSONRPC version!")
