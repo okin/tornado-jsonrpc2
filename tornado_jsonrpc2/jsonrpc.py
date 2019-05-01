@@ -67,7 +67,7 @@ class JSONRPCStyleRequest:
         return self._method
 
     @property
-    def params(self) -> list:
+    def params(self):
         return self._params
 
     @property
