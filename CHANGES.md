@@ -1,3 +1,10 @@
+# 0.5 - 2019-05-01
+
+* Request handlers do not return anything on POST.
+* Added basic typing information.
+* jsonrpc only exports the decode function when wildcard importing.
+* Removed unnecessary definition of version on JSONRPCRequest.
+
 # 0.4 - 2019-03-16
 
 * Fix a bug where no valid JSON-RPC response was returned if the used JSON-RPC

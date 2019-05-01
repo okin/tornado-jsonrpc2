@@ -1,3 +1,5 @@
+from typing import Any, Awaitable, Optional
+
 from tornado.escape import json_encode
 from tornado.web import RequestHandler
 
@@ -10,13 +12,13 @@ __all__ = ("BasicJSONRPCHandler", "JSONRPCHandler")
 
 
 class BasicJSONRPCHandler(RequestHandler):
-    def initialize(self, version=None):
+    def initialize(self, version: Optional[str]=None):
         self.version = version
 
     def set_default_headers(self):
         self.set_header('Content-Type', 'application/json')
 
-    async def handle_jsonrpc(self, request):
+    async def handle_jsonrpc(self, request) -> None:
         request = self.decode_jsonrpc_request(request)
         if not request:
             return
@@ -29,7 +31,7 @@ class BasicJSONRPCHandler(RequestHandler):
         except (InvalidRequest, ParseError, EmptyBatchRequest) as error:
             self.write(self.exception_to_jsonrpc(error))
 
-    async def process_jsonrpc_request(self, request):
+    async def process_jsonrpc_request(self, request) -> None:
         if isinstance(request, list):  # batch request
             responses = await self.process_jsonrpc_batch_request(request)
             if responses:
@@ -41,7 +43,7 @@ class BasicJSONRPCHandler(RequestHandler):
             if message:
                 self.write(message)
 
-    async def process_jsonrpc_batch_request(self, request):
+    async def process_jsonrpc_batch_request(self, request) -> list:
         responses = []
         for call in request:
             if isinstance(call, JSONRPCError):
@@ -54,10 +56,10 @@ class BasicJSONRPCHandler(RequestHandler):
 
         return responses
 
-    async def process_jsonrpc_single_request(self, request):
+    async def process_jsonrpc_single_request(self, request) -> dict:
         return await self.create_jsonrpc_response(request)
 
-    async def create_jsonrpc_response(self, request):
+    async def create_jsonrpc_response(self, request) -> dict:
         try:
             request.validate()
         except InvalidRequest as error:
@@ -81,7 +83,7 @@ class BasicJSONRPCHandler(RequestHandler):
             if not request.is_notification:
                 return self.exception_to_jsonrpc(InternalError(str(error)), request)
 
-    def exception_to_jsonrpc(self, exception, request=None):
+    def exception_to_jsonrpc(self, exception: JSONRPCError, request=None) -> dict:
         assert isinstance(exception, JSONRPCError)
 
         try:
@@ -120,12 +122,12 @@ class BasicJSONRPCHandler(RequestHandler):
 
 
 class JSONRPCHandler(BasicJSONRPCHandler):
-    def initialize(self, response_creator, version=None):
+    def initialize(self, response_creator: Awaitable, version: Optional[str]=None):
         super().initialize(version=version)
         self.create_response = response_creator
 
-    async def post(self):
-        return await self.handle_jsonrpc(self.request)
+    async def post(self) -> None:
+        await self.handle_jsonrpc(self.request)
 
-    async def compute_result(self, request):
+    async def compute_result(self, request) -> Any:
         return await self.create_response(request)

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="tornado-jsonrpc2",
-    version="0.4.dev",
+    version="0.5",
     author="Niko Wenselowski",
     author_email="niko@nerdno.de",
     description="JSON-RPC request handler for Tornado.",
