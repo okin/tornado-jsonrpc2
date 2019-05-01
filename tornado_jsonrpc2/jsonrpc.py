@@ -1,4 +1,6 @@
 import json
+from typing import Optional
+
 from tornado.escape import json_decode
 from .exceptions import InvalidRequest, ParseError, EmptyBatchRequest
 
@@ -7,7 +9,7 @@ __all__ = ('decode', )
 SUPPORTED_VERSIONS = {'2.0', '1.0'}
 
 
-def decode(request, version=None):
+def decode(request: str, version: Optional[str]=None):
     try:
         obj = json_decode(request)
     except json.JSONDecodeError as jsonError:
@@ -27,7 +29,7 @@ def decode(request, version=None):
         return request
 
 
-def process_request(request, version=None):
+def process_request(request: dict, version: Optional[str]=None):
     try:
         request_version = request.get('jsonrpc', '1.0')
         if version is not None and request_version != version:
@@ -61,15 +63,15 @@ class JSONRPCStyleRequest:
         return self._id
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
     @property
-    def params(self):
+    def params(self) -> list:
         return self._params
 
     @property
-    def version(self):
+    def version(self) -> str:
         return self._version
 
 
@@ -95,7 +97,7 @@ class JSONRPCRequest(JSONRPCStyleRequest):
         return self._id
 
     @property
-    def is_notification(self):
+    def is_notification(self) -> bool:
         return self._is_notification
 
     @property
@@ -109,7 +111,7 @@ class JSONRPCRequest(JSONRPCStyleRequest):
     def version(self):
         return self._version
 
-    def validate(self):
+    def validate(self) -> None:
         if self.version not in SUPPORTED_VERSIONS:
             raise InvalidRequest("Unsupported JSONRPC version!")
 
@@ -127,7 +129,7 @@ class JSONRPC1Request(JSONRPCRequest):
         if self._id is None:
             self._is_notification = True
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if not isinstance(self._params, list):
@@ -141,7 +143,7 @@ class JSONRPC2Request(JSONRPCRequest):
         if 'id' not in kwargs:
             self._is_notification = True
 
-    def validate(self):
+    def validate(self) -> None:
         super().validate()
 
         if (self._params is not None and
